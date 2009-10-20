@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Jaml - JavaScript HTML templating engine</title>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  </head>
+  <body>
+    <script type="text/javascript" src="../Jaml.js"></script>
+    <script type="text/javascript" src="../Node.js"></script>
+    <script type="text/javascript" src="../Renderer.js"></script>
+    
+    <div id="main">
+      <div id="header">
+        <h1>Jaml</h1>
+      </div>
+      
+      <div id="body" class="examples">
+        <h2>JavaScript Haml</h2>
+        <p>Jaml is a small but delightful way of rendering HTML using JavaScript.  It uses a simple DSL to DRY up your code.</p>
+
+        <p>There are only 2 steps - registering a template and rendering it.  Let's look at something simple first. On the left of each example is the source code, 
+          and on the right the rendered output.</p>
+        
+        <div class="example">
+          <h2>Starting Simple</h2>
+          <p>Here's how we can represent a simple HTML template in JavaScript with Jaml:</p>
+          
+          <div style="height: 180px;">
+            <pre id="simple" class="brush: jscript">
+Jaml.register('simple', function() {
+  div(
+    h1("Some title"),
+    p("Some exciting paragraph text"),
+    br(),
+
+    ul(
+      li("First item"),
+      li("Second item"),
+      li("Third item")
+    )
+  );
+});
+
+Jaml.render('simple');
+            </pre>
+
+            <textarea id="simple-output"></textarea>
+          </div>
+          
+          <p style="clear: both">Pretty simple stuff.  Jaml knows how to render our tags and in what order, which tags are self closing, and so on.</p>
+
+          <p>Apart from slightly terser syntax, the main advantage here is that we can define HTML templates in JavaScript, instead
+          of having to worry about ugly string interpolation.</p>
+        </div>
+        
+
+        <div class="example">
+          <h2>Templating</h2>
+          
+          <p>Let's say we want to render a product &lt;div&gt;.  Being good little programmers we'd like to separate our content from
+          our presentation so we register a product template like this:</p>
+          
+          <div style="height: 340px">
+            <pre id="product" class="brush: jscript">
+Jaml.register('product', function(product) {
+  div({cls: 'product'},
+    h1(product.title),
+
+    p(product.description),
+
+    img({src: product.thumbUrl}),
+    a({href: product.imageUrl}, 'View larger image'),
+
+    form(
+      label({for: 'quantity'}, "Quantity"),
+      input({type: 'text', name: 'quantity', id: 'quantity', value: 1}),
+
+      input({type: 'submit', value: 'Add to Cart'})
+    )
+  );
+});
+
+//this is the product we will be rendering
+var bsg = {
+  title      : 'Battlestar Galactica DVDs',
+  thumbUrl   : 'thumbnail.png',
+  imageUrl   : 'image.png',
+  description: 'Best. Show. Evar.'
+};
+
+Jaml.render('product', bsg);
+            </pre>
+
+            <textarea id="product-output"></textarea>
+          </div>
+        </div>
+        
+        <div class="example">
+          <h2>Collections</h2>
+          
+          <p>Let's say we have several products inside a Category. We can reuse our 'product' template within another, like this:</p>
+          
+          <div style="height: 325px;">
+            <pre id="category" class="brush: jscript">
+Jaml.register('category', function(category) {
+  div({cls: 'category'},
+    h1(category.name),
+    p(category.products.length + " products in this category:"),
+
+    div({cls: 'products'},
+      Jaml.render('product', category.products)
+    )
+  );
+});
+
+//here's a second product
+var snowWhite = {
+  title      : 'Snow White',
+  description: 'not so great actually',
+  thumbUrl   : 'thumbnail.png',
+  imageUrl   : 'image.png'
+};
+
+//and a category
+var category = {
+  name    : 'Doovde',
+  products: [bsg, snowWhite]
+}
+
+Jaml.render('category', category);
+
+            </pre>
+
+            <textarea id="category-output"></textarea>
+          </div>
+        </div>
+        
+        <div class="clearfix">&nbsp;</div>
+        <br />
+      </div>
+
+      <script type="text/javascript" charset="utf-8">
+        var product = {
+          title      : 'Battlestar Galactica DVDs',
+          thumbUrl   : 'thumbnail.png',
+          imageUrl   : 'image.png',
+          description: 'Best. Show. Evar.'
+        };
+
+        var demos = ['simple', 'product', 'category'],
+            data  = [
+              //simple
+              {},
+
+              //product
+              product,
+
+              //category
+              {
+                name: 'Doovde',
+                products: [
+                  product, //from the example above
+                  {
+                    title      : 'Snow White',
+                    description: 'not so great actually',
+                    thumbUrl   : 'thumbnail.png',
+                    imageUrl   : 'image.png'
+                  }
+                ]
+              }
+            ];
+
+        for (var i=0; i < demos.length; i++) {
+          var jamlCode = document.getElementById(demos[i]).innerHTML,
+              textarea = document.getElementById(demos[i] + '-output');
+
+          eval(jamlCode);
+          textarea.innerHTML = Jaml.render(demos[i], data[i]);
+        };
+      </script>
+
+      <!-- <script type="text/javascript" charset="utf-8">
+        Jaml.register('partial', function(data) {
+          ul({id: 'menu'}, 
+            li("first"),
+            li("second"),
+            li("third")
+          );
+        });
+
+        Jaml.register('layout', function(data) {
+          html(
+            head(
+              meta({'http-equiv': 'Content-type', content: 'text/html; charset=utf-8'}),
+              title(data.title)
+            ),
+            body(
+              div({id: 'header'},
+                h1(a({href: '/'}, "My Site")),
+                p("this is very pleasing")
+              ),
+              div({id: 'content'},
+                h1("My Special Page"),
+                p("This is a test page"),
+                br(),
+
+                Jaml.render("partial"),
+                yield()
+              )
+            )
+          );
+        });
+
+        Jaml.register('page', function(data) {
+          h1("This is the page title");
+          p("And here's some content");
+          div({cls: 'myDiv'}, 
+            ul(
+              li('list'),
+              li('of'),
+              li('items')
+            )
+          );
+        });
+
+        var rendered = Jaml.render('layout', {
+          title: 'page title'
+        });
+
+        console.log(rendered);
+      </script> -->
+    </div>
+    
+    <link rel='stylesheet' id='syntaxhighlighter-core-css'  href='http://edspencer.net/wp-content/plugins/syntaxhighlighter/syntaxhighlighter/styles/shCore.css?ver=2.0.320' type='text/css' media='all' />
+    <link rel='stylesheet' id='syntaxhighlighter-theme-default-css'  href='http://edspencer.net/wp-content/plugins/syntaxhighlighter/syntaxhighlighter/styles/shThemeDefault.css?ver=2.0.320' type='text/css' media='all' />
+    
+    <script type='text/javascript' src='http://edspencer.net/wp-content/plugins/syntaxhighlighter/syntaxhighlighter/scripts/shCore.js?ver=2.0.320'></script>
+    <script type='text/javascript' src='http://edspencer.net/wp-content/plugins/syntaxhighlighter/syntaxhighlighter/scripts/shBrushJScript.js?ver=2.0.320'></script>
+    <script type='text/javascript'>
+    	SyntaxHighlighter.config.clipboardSwf = 'http://edspencer.net/wp-content/plugins/syntaxhighlighter/syntaxhighlighter/scripts/clipboard.swf';
+    	SyntaxHighlighter.config.strings.expandSource = 'expand source';
+    	SyntaxHighlighter.config.strings.viewSource = 'view source';
+    	SyntaxHighlighter.config.strings.copyToClipboard = 'copy to clipboard';
+    	SyntaxHighlighter.config.strings.copyToClipboardConfirmation = 'The code is in your clipboard now';
+    	SyntaxHighlighter.config.strings.print = 'print';
+    	SyntaxHighlighter.config.strings.help = '?';
+    	SyntaxHighlighter.config.strings.alert = 'SyntaxHighlighter\n\n';
+    	SyntaxHighlighter.config.strings.noBrush = 'Can\'t find brush for: ';
+    	SyntaxHighlighter.config.strings.brushNotHtmlScript = 'Brush wasn\'t configured for html-script option: ';
+    	SyntaxHighlighter.defaults['tab-size'] = 2;
+    	SyntaxHighlighter.all();
+    </script>
+    
+    
+  </body>
+</html>

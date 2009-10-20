@@ -1,0 +1,3 @@
+[submodule "vendor/jspec"]
+	path = vendor/jspec
+	url = git://github.com/visionmedia/jspec.git
