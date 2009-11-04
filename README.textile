@@ -1,0 +1,151 @@
+h1. Jaml: beautiful HTML generation for JavaScript
+
+p. Jaml tries to emulate Ruby's Haml library, making it easy to generate HTML in your JavaScript projects.
+
+h2. Examples
+
+h3. Something Simple
+
+Registering a template is easy:
+
+bc. Jaml.register('simple', function() {
+  div(
+    h1("Some title"),
+    p("Some exciting paragraph text"),
+    br(),
+
+    ul(
+      li("First item"),
+      li("Second item"),
+      li("Third item")
+    )
+  );
+});
+
+p. So is rendering it:
+
+bc. Jaml.render('simple');
+
+p. Here's the output (yes, the indentation really is that pretty):
+
+notextile. <div>
+  <h1>Some title</h1>
+  <p>Some exciting paragraph text</p>
+  <br />
+  <ul>
+    <li>First item</li>
+    <li>Second item</li>
+    <li>Third item</li>
+  </ul>
+</div>
+
+h3. Templating
+
+p. Usually we want to inject data into templates - let's see how to do that:
+
+bc.. Jaml.register('product', function(product) {
+  div({cls: 'product'},
+    h1(product.title),
+
+    p(product.description),
+
+    img({src: product.thumbUrl}),
+    a({href: product.imageUrl}, 'View larger image'),
+
+    form(
+      label({for: 'quantity'}, "Quantity"),
+      input({type: 'text', name: 'quantity', id: 'quantity', value: 1}),
+
+      input({type: 'submit', value: 'Add to Cart'})
+    )
+  );
+});
+
+p. And now to render it:
+
+bc.. //this is the product we will be rendering
+var bsg = {
+  title      : 'Battlestar Galactica DVDs',
+  thumbUrl   : 'thumbnail.png',
+  imageUrl   : 'image.png',
+  description: 'Best. Show. Evar.'
+};
+
+Jaml.render('product', bsg);
+
+p. Which gives us:
+
+notextile.. <div class="product">
+  <h1>Battlestar Galactica DVDs</h1>
+  <p>Best. Show. Evar.</p>
+  <img src="thumbnail.png" />
+  <a href="image.png">View larger image</a>
+  <form>
+    <label for="quantity">Quantity</label>
+    <input type="text" name="quantity" id="quantity" value="1"></input>
+    <input type="submit" value="Add to Cart"></input>
+  </form>
+</div>
+
+h3. Collections and partials
+
+p. We can reuse templates inside other templates.  Here we make a Category template to hold more than one product:
+
+bc.. Jaml.register('category', function(category) {
+  div({cls: 'category'},
+    h1(category.name),
+    p(category.products.length + " products in this category:"),
+
+    div({cls: 'products'},
+      Jaml.render('product', category.products)
+    )
+  );
+});
+
+p. Now we render it with a couple of products:
+
+bc.. //here's a second product
+var snowWhite = {
+  title      : 'Snow White',
+  description: 'not so great actually',
+  thumbUrl   : 'thumbnail.png',
+  imageUrl   : 'image.png'
+};
+
+//and a category
+var category = {
+  name    : 'Doovde',
+  products: [bsg, snowWhite]
+}
+
+Jaml.render('category', category);
+
+p. Which gives us:
+
+notextile. <div class="category">
+  <h1>Doovde</h1>
+  <p>2 products in this category:</p>
+  <div class="products"><div class="product">
+  <h1>Battlestar Galactica DVDs</h1>
+  <p>Best. Show. Evar.</p>
+  <img src="thumbnail.png" />
+  <a href="image.png">View larger image</a>
+  <form>
+    <label for="quantity">Quantity</label>
+    <input type="text" name="quantity" id="quantity" value="1"></input>
+    <input type="submit" value="Add to Cart"></input>
+  </form>
+</div>
+<div class="product">
+  <h1>Snow White</h1>
+  <p>not so great actually</p>
+  <img src="thumbnail.png" />
+  <a href="image.png">View larger image</a>
+  <form>
+    <label for="quantity">Quantity</label>
+    <input type="text" name="quantity" id="quantity" value="1"></input>
+    <input type="submit" value="Add to Cart"></input>
+  </form>
+</div>
+</div>
+</div>
