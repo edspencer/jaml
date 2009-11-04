@@ -31,14 +31,15 @@ Jaml.Renderer.prototype = {
      */
     var fn = this.template.toString().replace(/^(function \(.*\) \{)\n/, '$1\n return');
     
-    var result;
+    var result = "";
+    
     with (this) {
       for (var i=0; i < data.length; i++) {
-        eval("result = (" + fn + ")(data[i])");
+        eval("result += ((" + fn + ")(data[i])).render()");
       }
     };
     
-    return result.render();
+    return result;
   },
   
   yield: function() {
