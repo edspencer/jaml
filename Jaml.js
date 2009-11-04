@@ -1,3 +1,10 @@
+/**
+ * @class Jaml
+ * @author Ed Spencer (http://edspencer.net)
+ * Jaml is a simple JavaScript library which makes HTML generation easy and pleasurable.
+ * Examples: http://edspencer.github.com/jaml
+ * Introduction: http://edspencer.net/2009/11/jaml-beautiful-html-generation-for-javascript.html
+ */
 Jaml = function() {
   return {
     templates: {},
