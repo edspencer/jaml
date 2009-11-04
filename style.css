@@ -155,6 +155,8 @@ pre {
   width: 47%;
   height: 100%;
   padding: 10px;
+  font-family: monospace;
+  font-size: 13px;
 }
 .example .syntaxhighlighter {
   font-size: 0.75em !important;
@@ -163,4 +165,11 @@ pre {
   margin-top: 0px !important;
   float: left !important;
   border: 1px solid #aaa !important;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+     /* Add your Safari-specific styles here. */
+  .example .syntaxhighlighter {
+    font-size: 0.93em !important;
+  }
 }

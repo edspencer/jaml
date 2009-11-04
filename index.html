@@ -112,7 +112,7 @@
         a({href: product.imageUrl}, 'View larger image'),
 
         form(
-          label({for: 'quantity'}, "Quantity"),
+          label({'for': 'quantity'}, "Quantity"),
           input({type: 'text', name: 'quantity', id: 'quantity', value: 1}),
 
           input({type: 'submit', value: 'Add to Cart'})
@@ -227,9 +227,10 @@
             for (var i=0; i < demos.length; i++) {
               var jamlCode = document.getElementById(demos[i]).innerHTML,
                   textarea = document.getElementById(demos[i] + '-output');
-
+                  
               eval(jamlCode);
-              textarea.innerHTML = Jaml.render(demos[i], data[i]);
+              
+              textarea.value = textarea.innerHTML = Jaml.render(demos[i], data[i]);
             };
           </script>
       
