@@ -8,7 +8,7 @@ h3. Something Simple
 
 Registering a template is easy:
 
-bc. Jaml.register('simple', function() {
+bc.. Jaml.register('simple', function() {
   div(
     h1("Some title"),
     p("Some exciting paragraph text"),
@@ -28,7 +28,7 @@ bc. Jaml.render('simple');
 
 p. Here's the output (yes, the indentation really is that pretty):
 
-notextile. <div>
+pre. <div>
   <h1>Some title</h1>
   <p>Some exciting paragraph text</p>
   <br />
@@ -75,7 +75,7 @@ Jaml.render('product', bsg);
 
 p. Which gives us:
 
-notextile.. <div class="product">
+pre.. <div class="product">
   <h1>Battlestar Galactica DVDs</h1>
   <p>Best. Show. Evar.</p>
   <img src="thumbnail.png" />
@@ -122,7 +122,7 @@ Jaml.render('category', category);
 
 p. Which gives us:
 
-notextile. <div class="category">
+pre.. <div class="category">
   <h1>Doovde</h1>
   <p>2 products in this category:</p>
   <div class="products"><div class="product">
