@@ -60,7 +60,7 @@ Jaml.Node.prototype = {
         textnode  = (this instanceof Jaml.TextNode),
         multiline = this.multiLineTag();
     
-    for (key in this.attributes) {
+    for (var key in this.attributes) {
       attrs.push(key + '=' + this.attributes[key]);
     }
     
@@ -71,7 +71,7 @@ Jaml.Node.prototype = {
     node.push("<" + this.tagName);
     
     //add any tag attributes
-    for (key in this.attributes) {
+    for (var key in this.attributes) {
       node.push(" " + key + "=\"" + this.attributes[key] + "\"");
     }
     
