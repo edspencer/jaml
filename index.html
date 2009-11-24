@@ -145,8 +145,8 @@
               <div style="height: 325px;">
                 <pre id="category" class="brush: jscript">
     Jaml.register('category', function(category) {
+      h1(category.name),
       div({cls: 'category'},
-        h1(category.name),
         p(category.products.length + " products in this category:"),
 
         div({cls: 'products'},

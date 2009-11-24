@@ -1,3 +1,10 @@
+/**
+ * @class Jaml
+ * @author Ed Spencer (http://edspencer.net)
+ * Jaml is a simple JavaScript library which makes HTML generation easy and pleasurable.
+ * Examples: http://edspencer.github.com/jaml
+ * Introduction: http://edspencer.net/2009/11/jaml-beautiful-html-generation-for-javascript.html
+ */
 Jaml = function() {
   return {
     templates: {},
@@ -19,7 +26,7 @@ Jaml = function() {
      */
     render: function(name, data) {
       var template = this.templates[name],
-          renderer = new Jaml.Renderer(template);
+          renderer = new Jaml.Template(template);
           
       return renderer.render(data);
     },
@@ -34,7 +41,6 @@ Jaml = function() {
     }
   };
 }();
-
 
 /**
  * @constructor
@@ -98,7 +104,7 @@ Jaml.Node.prototype = {
         textnode  = (this instanceof Jaml.TextNode),
         multiline = this.multiLineTag();
     
-    for (key in this.attributes) {
+    for (var key in this.attributes) {
       attrs.push(key + '=' + this.attributes[key]);
     }
     
@@ -109,7 +115,7 @@ Jaml.Node.prototype = {
     node.push("<" + this.tagName);
     
     //add any tag attributes
-    for (key in this.attributes) {
+    for (var key in this.attributes) {
       node.push(" " + key + "=\"" + this.attributes[key] + "\"");
     }
     
@@ -185,22 +191,34 @@ Jaml.TextNode.prototype = {
   }
 };
 
-Jaml.Renderer = function(template) {
+/**
+ * Represents a single registered template. Templates consist of an arbitrary number
+ * of trees (e.g. there may be more than a single root node), and are not compiled.
+ * When a template is rendered its node structure is computed with any provided template
+ * data, culminating in one or more root nodes.  The root node(s) are then joined together
+ * and returned as a single output string.
+ * 
+ * The render process uses two dirty but necessary hacks.  First, the template function is
+ * decompiled into a string (but is not modified), so that it can be eval'ed within the scope
+ * of Jaml.Template.prototype. This allows the second hack, which is the use of the 'with' keyword.
+ * This allows us to keep the pretty DSL-like syntax, though is not as efficient as it could be.
+ */
+Jaml.Template = function(tpl) {
   /**
-   * @property template
-   * @type Jaml.Template
-   * The template bound to this renderer
+   * @property tpl
+   * @type Function
+   * The function this template was created from
    */
-  this.template = template;
+  this.tpl = tpl;
   
-  this.createTagMethods();
+  this.nodes = [];
 };
 
-Jaml.Renderer.prototype = {
+Jaml.Template.prototype = {
   /**
-   * Renders this template into HTML with the given data
-   * @param {Object} data Optional data object to give to the template
-   * @return {String} Rendered HTML
+   * Renders this template given the supplied data
+   * @param {Object} data Optional data object
+   * @return {String} The rendered HTML string
    */
   render: function(data) {
     data = data || {};
@@ -211,67 +229,38 @@ Jaml.Renderer.prototype = {
       data = [data];
     }
     
-    /**
-     * Here is a lovely hack.
-     * Take the string version of a template and add a 'return' statement to make sure that
-     * the outermost tag actually returns what gets evaluated into it.
-     */
-    var fn = this.template.toString().replace(/^(function \(.*\) \{)\n/, '$1\n return');
-    
-    var result = "";
-    
-    with (this) {
+    with(this) {
       for (var i=0; i < data.length; i++) {
-        eval("result += ((" + fn + ")(data[i])).render()");
-      }
+        eval("(" + this.tpl.toString() + ")(data[i])");
+      };
+    }
+    
+    var roots  = this.getRoots(),
+        output = "";
+    
+    for (var i=0; i < roots.length; i++) {
+      output += roots[i].render();
     };
     
-    return result;
-  },
-  
-  yield: function() {
-    return "";
+    return output;
   },
   
   /**
-   * Creates a method for each tag name
-   * @param {Array} tags Array of tag names (defaults to this.tags)
+   * Returns all top-level (root) nodes in this template tree.
+   * Templates are tree structures, but there is no guarantee that there is a
+   * single root node (e.g. a single DOM element that all other elements nest within)
+   * @return {Array} The array of root nodes
    */
-  createTagMethods: function(tags) {
-    tags = tags || this.tags;
+  getRoots: function() {
+    var roots = [];
     
-    for (var i = this.tags.length - 1; i >= 0; i--){
-      var tagName = this.tags[i];
+    for (var i=0; i < this.nodes.length; i++) {
+      var node = this.nodes[i];
       
-      this[tagName] = (function(tagName) {
-        return function(attrs) {
-          // console.log(tagName);
-          // console.log(arguments);
-          
-          var node = new Jaml.Node(tagName);
-          
-          var firstArgIsAttributes =  (typeof attrs == 'object')
-                                   && !(attrs instanceof Jaml.Node)
-                                   && !(attrs instanceof Jaml.TextNode);
-          
-          if (firstArgIsAttributes) node.setAttributes(attrs);
-          
-          var startIndex = firstArgIsAttributes ? 1 : 0;
-            
-          for (var i=startIndex; i < arguments.length; i++) {
-            var arg = arguments[i];
-            
-            if (typeof arg == "string" || arg == undefined) {
-              arg = new Jaml.TextNode(arg || "");
-            }
-            
-            node.addChild(arg);
-          };
-          
-          return node;
-        };
-      })(tagName);
+      if (node.parent == undefined) roots.push(node);
     };
+    
+    return roots;
   },
   
   tags: [
@@ -284,3 +273,52 @@ Jaml.Renderer.prototype = {
     "form", "input", "label"
   ]
 };
+
+/**
+ * Adds a function for each tag onto Template's prototype
+ */
+(function() {
+  var tags = Jaml.Template.prototype.tags;
+  
+  for (var i = tags.length - 1; i >= 0; i--){
+    var tagName = tags[i];
+    
+    /**
+     * This function is created for each tag name and assigned to Template's
+     * prototype below
+     */
+    var fn = function(tagName) {
+      return function(attrs) {
+        var node = new Jaml.Node(tagName);
+        
+        var firstArgIsAttributes =  (typeof attrs == 'object')
+                                 && !(attrs instanceof Jaml.Node)
+                                 && !(attrs instanceof Jaml.TextNode);
+
+        if (firstArgIsAttributes) node.setAttributes(attrs);
+
+        var startIndex = firstArgIsAttributes ? 1 : 0;
+
+        for (var i=startIndex; i < arguments.length; i++) {
+          var arg = arguments[i];
+
+          if (typeof arg == "string" || arg == undefined) {
+            arg = new Jaml.TextNode(arg || "");
+          }
+          
+          if (arg instanceof Jaml.Node || arg instanceof Jaml.TextNode) {
+            arg.parent = node;
+          }
+
+          node.addChild(arg);
+        };
+        
+        this.nodes.push(node);
+        
+        return node;
+      };
+    };
+    
+    Jaml.Template.prototype[tagName] = fn(tagName);
+  };
+})();
