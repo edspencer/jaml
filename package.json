@@ -1,0 +1,7 @@
+{
+    "name": "jaml",
+    "description": "A library of JSGI middleware, handlers, and utilities, based on Rack",
+    "keywords": ["haml", "template"],
+    "author": "Ed Spencer (http://edspencer.net/)",
+    "version": "0.0.1"
+}
