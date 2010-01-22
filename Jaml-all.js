@@ -99,13 +99,8 @@ Jaml.Node.prototype = {
     lpad = lpad || 0;
     
     var node      = [],
-        attrs     = [],
         textnode  = (this instanceof Jaml.TextNode),
         multiline = this.multiLineTag();
-    
-    for (var key in this.attributes) {
-      attrs.push(key + '=' + this.attributes[key]);
-    }
     
     //add any left padding
     if (!textnode) node.push(this.getPadding(lpad));
