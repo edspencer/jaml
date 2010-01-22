@@ -228,14 +228,14 @@ Jaml.Template.prototype = {
       // function's scope.
       with(this) {
         for (var i = 0; i < data.length; i++) {
-          eval("(" + this.tpl.toString() + ")(data[i])");
+          eval("(" + this.tpl.toString() + ")(data[i], i)");
         };
       }      
     } else {
       // Avoid the `eval` call at the cost of slightly more verbose
       // templates.
       for (var i = 0; i < data.length; i++) {
-        this.tpl.call(this, data[i]);
+        this.tpl.call(this, data[i], i);
       }
     }
     
