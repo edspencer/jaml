@@ -39,6 +39,7 @@ Jaml = function() {
      */
     registerHelper: function(name, helperFn) {
       this.helpers[name] = helperFn;
+      Jaml.Template.prototype[name] = helperFn;
     }
   };
 }();
