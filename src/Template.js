@@ -38,7 +38,7 @@ Jaml.Template.prototype = {
     
     with(this) {
       for (var i=0; i < data.length; i++) {
-        eval("(" + this.tpl.toString() + ")(data[i])");
+        eval("(" + this.tpl.toString() + ")(data[i], i)");
       };
     }
     
