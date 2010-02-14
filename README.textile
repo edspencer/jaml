@@ -149,3 +149,10 @@ pre.. <div class="category">
 </div>
 </div>
 </div>
+
+h2. Error handling
+
+p. If the requested template does not exist, the renderer will return null:
+
+bc.. => Jaml.render('missing');
+=> null
