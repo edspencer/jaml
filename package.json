@@ -1,6 +1,6 @@
 {
     "name": "jaml",
-    "description": "A library of JSGI middleware, handlers, and utilities, based on Rack",
+    "description": "Jaml tries to emulate Ruby’s Haml library, making it easy to generate HTML in your JavaScript projects.",
     "keywords": ["haml", "template"],
     "author": "Ed Spencer (http://edspencer.net/)",
     "version": "0.0.1"
