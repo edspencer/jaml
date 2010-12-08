@@ -61,19 +61,20 @@ Jaml.Node.prototype = {
         textnode  = (this instanceof Jaml.TextNode),
         multiline = this.multiLineTag();
     
-    for (var key in this.attributes) {
-      attrs.push(key + '=' + this.attributes[key]);
-    }
     
     //add any left padding
     if (!textnode) node.push(this.getPadding(lpad));
     
     //open the tag
     node.push("<" + this.tagName);
-    
-    //add any tag attributes
+
     for (var key in this.attributes) {
-      node.push(" " + key + "=\"" + this.attributes[key] + "\"");
+      attrs.push(key + "=\"" + this.attributes[key] + "\"");
+    }    
+    attrs.sort()
+    //add any tag attributes
+    for (var i=0; i<attrs.length; i++) {
+      node.push(" " + attrs[i]);
     }
     
     if (this.isSelfClosing()) {

@@ -17,8 +17,12 @@ describe("Jaml.Node", function() {
   });
   
   describe("attributes", function() {
-    it("renders attributes as key value pairs separate by = in the tag", function(){
+    it("renders attributes as key value pairs separated by = in the tag", function(){
       assert.equal("<fooBar a=\"b\"></fooBar>\n", fooBar.setAttributes({a:"b"}).render());
+    });
+
+    it("renders several attributes in a row.  order is imposed.", function(){
+      assert.equal("<fooBar a=\"b\" c=\"d\" x=\"y\"></fooBar>\n", fooBar.setAttributes({x:"y", a:"b", c:"d"}).render());
     });
   });
 });
