@@ -37,6 +37,7 @@ Jaml.Node.prototype = {
       
       this.attributes[mappedKey] = attrs[key];
     }
+    return this;
   },
   
   /**
