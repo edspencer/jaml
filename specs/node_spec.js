@@ -158,6 +158,16 @@ describe("Jaml.Node", function() {
     });    
 
     it("renders arrays of arrays too", function(){
+       expect(fooBar.addChild([[new Jaml.Node("x"), [new Jaml.Node("y")]]]).
+                     addChild(new Jaml.Node("z")).render()).
+      toEqual("<fooBar>\n" +
+              "  <x/>\n" +
+              "  <y/>\n" +
+              "  <z/>\n" +
+              "</fooBar>\n");
+    });    
+
+    it("renders children of children in arrays properly", function(){
       expect(fooBar.addChild([[new Jaml.Node("x").addChild(new Jaml.Node("J")), 
                               [new Jaml.Node("y").addChild(new Jaml.Node("K"))]]]).
                     addChild(new Jaml.Node("z")).render()).
@@ -172,15 +182,6 @@ describe("Jaml.Node", function() {
              "</fooBar>\n");
     });    
 
-    it("renders children of children in arrays properly", function(){
-       expect(fooBar.addChild([[new Jaml.Node("x"), [new Jaml.Node("y")]]]).
-                     addChild(new Jaml.Node("z")).render()).
-      toEqual("<fooBar>\n" +
-              "  <x/>\n" +
-              "  <y/>\n" +
-              "  <z/>\n" +
-              "</fooBar>\n");
-    });    
   })
   
   describe("textnode children", function() {
