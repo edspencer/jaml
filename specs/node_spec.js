@@ -137,7 +137,28 @@ describe("Jaml.Node", function() {
     });
   });
   
-  describe("textnodes", function() {
+  describe("array children", function() {
+    it("renders an array of nodes as a series of child nodes.  " +
+       "this is often useful when you want to $.map or _.map an array of objects into the equivalent array of nodes.", function(){
+      expect(fooBar.addChild([new Jaml.Node("x"), new Jaml.Node("y")]).
+                    addChild(new Jaml.Node("z")).render()).
+     toEqual("<fooBar>\n" +
+             "  <x/>\n" +
+             "  <y/>\n" +
+             "  <z/>\n" +
+             "</fooBar>\n");
+    });    
+
+    it("works with mixed node and textnodes", function(){
+      expect(fooBar.addChild([new Jaml.Node("x"), new Jaml.TextNode("y")]).
+                    addChild(new Jaml.TextNode("z")).render()).
+     toEqual("<fooBar>\n" +
+             "  <x/>\n" +
+             "yz</fooBar>\n");
+    });    
+  })
+  
+  describe("textnode children", function() {
     it("renders", function(){
       expect(new Jaml.TextNode("x").render()).
      toEqual("x");

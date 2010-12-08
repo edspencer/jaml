@@ -84,11 +84,18 @@ Jaml.Node.prototype = {
       node.push(">");
       
       if (multiline) node.push("\n");
-      
+
       for (var i=0; i < this.children.length; i++) {
-        node.push(this.children[i].render(lpad + 2));
+        var child = this.children[i];
+        if (child instanceof Array) {
+          for (var j=0; j < child.length; j++) {
+            node.push(child[j].render(lpad + 2));
+          }
+        } else {
+          node.push(child.render(lpad + 2));
+        }
       }
-      
+            
       if (multiline) node.push(this.getPadding(lpad));
       node.push("</", this.tagName, ">\n");
     }
