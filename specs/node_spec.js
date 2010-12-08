@@ -21,6 +21,10 @@ describe("Jaml.Node", function() {
                    "</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.Node("x")).render());
     });
     
+    it("doesn't self-close if there are text nodes", function(){
+      assert.equal("<fooBar>x</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.TextNode("x")).render());
+    });
+    
   });
   
   describe("padding of spaces at the front", function() {
@@ -84,7 +88,7 @@ describe("Jaml.Node", function() {
     //todo: throw if the attribute value is a non-primitive?
   });
   
-  describe("children", function() {
+  describe("element children", function() {
     it("renders children as inner tags", function(){
       assert.equal("<fooBar>\n" +
                    "  <x/>\n" +
@@ -113,6 +117,21 @@ describe("Jaml.Node", function() {
                    "</fooBar>\n", 
                    fooBar.addChild(new Jaml.Node("x").addChild(new Jaml.Node("J"))).
                           addChild(new Jaml.Node("y").addChild(new Jaml.Node("K"))).render());
+    });
+  });
+  
+  describe("textnodes", function() {
+    it("renders", function(){
+      assert.equal("x", new Jaml.TextNode("x").render());
+    });
+
+    it("renders a single textnode child all on one line", function(){
+      assert.equal("<fooBar>x</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.TextNode("x")).render());
+    });
+
+    it("renders text nodes in one line, on a new line if there are multiple textnode children", function(){
+      assert.equal("<fooBar>\nxy</fooBar>\n", fooBar.addChild(new Jaml.TextNode("x")).
+                                                     addChild(new Jaml.TextNode("y")).render());
     });
   });
 });
