@@ -157,40 +157,37 @@ p. If the requested template does not exist, the renderer will return null:
 bc.. => Jaml.render('missing');
 => null
 
-h2. Testing
+h3. Jaml Tests
 
-p.The Jaml test suite runs using either node or via a webpage-based runner (specs/index.html).
+p. You can run the Jaml test suite using either node.js at the command line or via a webpage-based runner.
 
 h4. Run the tests in a browser
 
-p.To use the web-based runner, jasmine must be checked out in a directory alongside jaml:
+p. Jasmine must be checked out in a directory alongside jaml:
 
-pre..
-git clone https://github.com/pivotal/jasmine
+bc.. git clone https://github.com/pivotal/jasmine
 ls
-==> jaml jasmine
+=> jaml jasmine
 
 p. ...then open specs/index.html in your browser.
 
 h4. Run the tests using node.js
 
-p. Install node.js
+p. 1) Install node.js.
 
-p. Check out sconover's jasmine-node alongside jaml:
+p. 2) Check out sconover's jasmine-node alongside jaml:
 
-pre..
-git clone https://github.com/sconover/jasmine-node
+bc.. git clone https://github.com/sconover/jasmine-node
 ls
-==> jaml jasmine-node
+=> jaml jasmine-node
 
-p. then run the suite:
+p. 3) Run the suite:
 
-pre..
-$ node specs/suite.js 
+bc.. $ node specs/suite.js 
 Started
 ..........................
 
 Finished in 0.018 seconds
-12 tests, 39 assertions, 0 failures
+X tests, Y assertions, 0 failures
 
 
