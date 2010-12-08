@@ -16,7 +16,9 @@ describe("Jaml.Node", function() {
     });
     
     it("doesn't self-close if there are children", function(){
-      assert.equal("<fooBar>\n  <x/>\n</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.Node("x")).render());
+      assert.equal("<fooBar>\n" +
+                   "  <x/>\n" +
+                   "</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.Node("x")).render());
     });
     
   });
@@ -29,7 +31,11 @@ describe("Jaml.Node", function() {
     });
 
     it("indents children by 2", function(){
-      assert.equal("<fooBar>\n  <x>\n    <y/>\n  </x>\n</fooBar>\n", 
+      assert.equal("<fooBar>\n" +
+                   "  <x>\n" + 
+                   "    <y/>\n" +
+                   "  </x>\n" +
+                   "</fooBar>\n", 
                    new Jaml.Node("fooBar").
                      addChild(
                        new Jaml.Node("x").
@@ -80,18 +86,31 @@ describe("Jaml.Node", function() {
   
   describe("children", function() {
     it("renders children as inner tags", function(){
-      assert.equal("<fooBar>\n  <x/>\n</fooBar>\n", fooBar.addChild(new Jaml.Node("x")).render());
+      assert.equal("<fooBar>\n" +
+                   "  <x/>\n" +
+                   "</fooBar>\n", fooBar.addChild(new Jaml.Node("x")).render());
     });
 
     it("renders multiple children in order", function(){
-      assert.equal("<fooBar>\n  <x/>\n  <y/>\n  <z/>\n</fooBar>\n", 
+      assert.equal("<fooBar>\n" +
+                   "  <x/>\n" +
+                   "  <y/>\n" +
+                   "  <z/>\n" +
+                   "</fooBar>\n", 
                    fooBar.addChild(new Jaml.Node("x")).
                           addChild(new Jaml.Node("y")).
                           addChild(new Jaml.Node("z")).render());
     });
 
     it("renders children of children", function(){
-      assert.equal("<fooBar>\n  <x>\n    <J/>\n  </x>\n  <y>\n    <K/>\n  </y>\n</fooBar>\n", 
+      assert.equal("<fooBar>\n" +
+                   "  <x>\n" +
+                   "    <J/>\n" +
+                   "  </x>\n" +
+                   "  <y>\n" +
+                   "    <K/>\n" +
+                   "  </y>\n" +
+                   "</fooBar>\n", 
                    fooBar.addChild(new Jaml.Node("x").addChild(new Jaml.Node("J"))).
                           addChild(new Jaml.Node("y").addChild(new Jaml.Node("K"))).render());
     });
