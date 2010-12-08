@@ -11,7 +11,7 @@ describe("Jaml.Node", function() {
       assert.equal("<fooBar/>\n", new Jaml.Node("fooBar").render());
     });
 
-    it("textarea (for example) should not self-close", function(){
+    it("doesn't self-close for (for example) textarea", function(){
       assert.equal("<textarea></textarea>\n", new Jaml.Node("textarea").render());
     });
     
@@ -88,6 +88,12 @@ describe("Jaml.Node", function() {
                    fooBar.addChild(new Jaml.Node("x")).
                           addChild(new Jaml.Node("y")).
                           addChild(new Jaml.Node("z")).render());
+    });
+
+    it("renders children of children", function(){
+      assert.equal("<fooBar>\n  <x>\n    <J/>\n  </x>\n  <y>\n    <K/>\n  </y>\n</fooBar>\n", 
+                   fooBar.addChild(new Jaml.Node("x").addChild(new Jaml.Node("J"))).
+                          addChild(new Jaml.Node("y").addChild(new Jaml.Node("K"))).render());
     });
   });
 });
