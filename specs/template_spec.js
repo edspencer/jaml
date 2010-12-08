@@ -32,7 +32,7 @@ describe("Jaml.Template", function() {
              }).render()).
      toEqual("<html>\n" +
              "  <head>\n" +
-             "    <meta/>\n    <script/>\n    <title/>\n    <link/>\n" +
+             "    <meta/>\n    <script></script>\n    <title/>\n    <link/>\n" +
              "  </head>\n" +
              "  <body>\n" +
              "    <div/>\n    <p/>\n    <span/>\n    <a/>\n    <img/>\n" +

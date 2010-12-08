@@ -12,9 +12,12 @@ describe("Jaml.Node", function() {
      toEqual("<fooBar/>\n");
     });
 
-    it("doesn't self-close for (for example) textarea", function(){
+    it("doesn't self-close for (for example) textarea and script", function(){
       expect(new Jaml.Node("textarea").render()).
      toEqual("<textarea></textarea>\n");
+
+      expect(new Jaml.Node("script").render()).
+     toEqual("<script></script>\n");
     });
     
     it("doesn't self-close if there are children", function(){
