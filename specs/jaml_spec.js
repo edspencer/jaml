@@ -4,7 +4,6 @@ describe("Jaml (top-level)", function() {
 
   beforeEach(function(){
     Jaml.templates = {}
-    Jaml.helpers = {}
   })
   
   describe("you can register a template and then use it to render", function() {

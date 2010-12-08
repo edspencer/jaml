@@ -8,8 +8,7 @@
 Jaml = function() {
   return {
     templates: {},
-    helpers  : {},
-    
+        
     /**
      * Registers a template by name
      * @param {String} name The name of the template
@@ -29,15 +28,6 @@ Jaml = function() {
           renderer = new Jaml.Template(template);
           
       return renderer.render(data);
-    },
-    
-    /**
-     * Registers a helper function
-     * @param {String} name The name of the helper
-     * @param {Function} helperFn The helper function
-     */
-    registerHelper: function(name, helperFn) {
-      this.helpers[name] = helperFn;
-    }
+    }    
   };
 }();
