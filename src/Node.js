@@ -78,7 +78,7 @@ Jaml.Node.prototype = {
     }
     
     if (this.isSelfClosing()) {
-      node.push(" />\n");
+      node.push("/>\n");
     } else {
       node.push(">");
       
@@ -122,10 +122,10 @@ Jaml.Node.prototype = {
    * @return {Boolean} True if this tag should close itself
    */
   isSelfClosing: function() {
-    var selfClosing = false;
+    var selfClosing = true;
     
-    for (var i = this.selfClosingTags.length - 1; i >= 0; i--){
-      if (this.tagName == this.selfClosingTags[i]) selfClosing = true;
+    for (var i = this.notSelfClosingTags.length - 1; i >= 0; i--){
+      if (this.tagName == this.notSelfClosingTags[i]) selfClosing = false;
     }
     
     return selfClosing;
@@ -136,7 +136,7 @@ Jaml.Node.prototype = {
    * @type Array
    * An array of all tags that should be self closing
    */
-  selfClosingTags: ['img', 'meta', 'br', 'hr']
+  notSelfClosingTags: ['textarea']
 };
 
 Jaml.TextNode = function(text) {
