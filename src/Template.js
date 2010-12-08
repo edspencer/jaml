@@ -71,7 +71,7 @@ Jaml.Template.prototype = {
   },
   
   tags: [
-    "html", "head", "body", "script", "meta", "title", "link", "script",
+    "html", "head", "body", "script", "meta", "title", "link",
     "div", "p", "span", "a", "img", "br", "hr",
     "table", "tr", "th", "td", "thead", "tbody",
     "ul", "ol", "li", 

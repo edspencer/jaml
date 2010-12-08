@@ -5,6 +5,59 @@ describe("Jaml.Template", function() {
   beforeEach(function(){
     // fooBar = new Jaml.Node("fooBar");
   });
+
+  describe("all html tags", function() {
+    it("a giant integration test for all html tags, so we see what we're allowing." +
+       "  intentionally locating this at the top of this spec file.", function(){      
+      assert.equal(
+        "<html>\n" +
+        "  <head>\n" +
+        "    <meta/>\n    <script/>\n    <title/>\n    <link/>\n" +
+        "  </head>\n" +
+        "  <body>\n" +
+        "    <div/>\n    <p/>\n    <span/>\n    <a/>\n    <img/>\n" +
+        "    <br/>\n    <hr/>\n" +
+        "    <table>\n" +
+        "      <thead>\n        <tr>\n          <th/>\n        </tr>\n      </thead>\n" +
+        "      <tbody>\n        <tr>\n          <td/>\n        </tr>\n      </tbody>\n" +
+        "    </table>\n" +
+        "    <ul>\n      <li/>\n      <ol/>\n    </ul>\n" +
+        "    <dl/>\n    <dt/>\n    <dd/>\n" +
+        "    <h1/>\n    <h2/>\n    <h3/>\n    <h4/>\n    <h5/>\n    <h6/>\n    <h7/>\n" +
+        "    <form>\n" +
+        "      <fieldset>\n" +
+        "        <label/>\n" +
+        "        <input/>\n" +
+        "      </fieldset>\n" +
+        "    </form>\n" +
+        "  </body>\n" +
+        "</html>\n", 
+      new Jaml.Template(function(){
+        html(
+          head(
+            meta(), script(), title(), link()
+          ),
+          body(
+            div(), p(), span(), a(), img(),
+            br(), hr(),
+            table(
+              thead(tr(th())),
+              tbody(tr(td()))
+            ),
+            ul(li(), ol()),
+            dl(), dt(), dd(),
+            h1(), h2(), h3(), h4(), h5(), h6(), h7(),
+            form(
+              fieldset(
+                label(),
+                input()
+              )
+            )
+          )
+        )
+      }).render());
+    });
+  });
   
   describe("basic", function() {
     it("renders", function(){
