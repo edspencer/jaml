@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Jasmine Test Runner</title>  
+    <link href="../../jasmine/lib/jasmine.css" rel="stylesheet"/>
+    <script src="../../jasmine/lib/jasmine.js"></script>
+    <script src="../../jasmine/lib/jasmine-html.js"></script>
+
+    <!--SOURCE-->
+    <script src="../src/Jaml.js"></script>
+    <script src="../src/Node.js"></script>
+    <script src="../src/Template.js"></script>
+    
+    <script>
+      function require() {
+        //do nothing for now.  this makes the web-based test run work
+        //consider using modulr in the future
+        //https://github.com/codespeaks/modulr
+      }
+    </script
+  
+    <!--TEST-->
+    <script src="node_spec.js"></script>
+    <script src="template_spec.js"></script>
+    <script src="jaml_spec.js"></script>
+
+
+    <script>
+      (function() {
+        var jasmineEnv = jasmine.getEnv()
+        jasmineEnv.updateInterval = 1000
+
+        var trivialReporter = new jasmine.TrivialReporter()
+
+        jasmineEnv.addReporter(trivialReporter)
+
+        jasmineEnv.specFilter = function(spec) {
+          return trivialReporter.specFilter(spec)
+        }
+
+        window.onload = function() {
+          jasmineEnv.execute()
+        }
+      })()
+    </script>
+
+  </head>
+  <body/>
+</html>
