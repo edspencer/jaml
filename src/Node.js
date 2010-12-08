@@ -84,23 +84,34 @@ Jaml.Node.prototype = {
       node.push(">");
       
       if (multiline) node.push("\n");
-
-      for (var i=0; i < this.children.length; i++) {
-        var child = this.children[i];
-        if (child instanceof Array) {
-          for (var j=0; j < child.length; j++) {
-            node.push(child[j].render(lpad + 2));
-          }
-        } else {
-          node.push(child.render(lpad + 2));
-        }
-      }
+      
+      this.renderChildren(node, this.children, lpad);
             
       if (multiline) node.push(this.getPadding(lpad));
       node.push("</", this.tagName, ">\n");
     }
     
     return node.join("");
+  },
+
+  /**
+   * Renders an array of children
+   * @node {Array} the current array of rendered lines
+   * @children {Array} the child nodes to be rendered
+   * @param {Number} lpad Amount of whitespace to add to the left of the string
+   */
+  renderChildren: function(node, children, lpad) {
+    var childLpad = lpad + 2;
+    
+    for (var i=0; i < children.length; i++) {
+      var child = children[i];
+      if (child instanceof Array) {
+        var nestedChildren = child;
+        this.renderChildren(node, nestedChildren, lpad)
+      } else {
+        node.push(child.render(childLpad));
+      }
+    }    
   },
   
   /**
