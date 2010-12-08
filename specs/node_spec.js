@@ -14,6 +14,11 @@ describe("Jaml.Node", function() {
     it("textarea (for example) should not self-close", function(){
       assert.equal("<textarea></textarea>\n", new Jaml.Node("textarea").render());
     });
+    
+    it("doesn't self-close if there are children", function(){
+      assert.equal("<fooBar>\n  <x/>\n</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.Node("x")).render());
+    });
+    
   });
   
   describe("padding of spaces at the front", function() {
@@ -21,6 +26,15 @@ describe("Jaml.Node", function() {
       assert.equal("<fooBar/>\n", new Jaml.Node("fooBar").render());
       assert.equal("<fooBar/>\n", new Jaml.Node("fooBar").render(0));
       assert.equal("     <fooBar/>\n", new Jaml.Node("fooBar").render(5));
+    });
+
+    it("indents children by 2", function(){
+      assert.equal("<fooBar>\n  <x>\n    <y/>\n  </x>\n</fooBar>\n", 
+                   new Jaml.Node("fooBar").
+                     addChild(
+                       new Jaml.Node("x").
+                         addChild(new Jaml.Node("y"))
+                     ).render());
     });
   });
   
@@ -59,9 +73,22 @@ describe("Jaml.Node", function() {
       assert.equal("<fooBar a=\"7e+22\"/>\n", fooBar.setAttributes({a:70000000000000000000000.01}).render());
       
       assert.equal("<fooBar a=\"7e-23\"/>\n", fooBar.setAttributes({a:0.00000000000000000000007}).render());
-    })
+    });
     
     //todo: throw if the attribute value is a non-primitive?
+  });
+  
+  describe("children", function() {
+    it("renders children as inner tags", function(){
+      assert.equal("<fooBar>\n  <x/>\n</fooBar>\n", fooBar.addChild(new Jaml.Node("x")).render());
+    });
+
+    it("renders multiple children in order", function(){
+      assert.equal("<fooBar>\n  <x/>\n  <y/>\n  <z/>\n</fooBar>\n", 
+                   fooBar.addChild(new Jaml.Node("x")).
+                          addChild(new Jaml.Node("y")).
+                          addChild(new Jaml.Node("z")).render());
+    });
   });
 });
 

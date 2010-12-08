@@ -46,6 +46,7 @@ Jaml.Node.prototype = {
    */
   addChild: function(childText) {
     this.children.push(childText);
+    return this;
   },
   
   /**
@@ -77,7 +78,7 @@ Jaml.Node.prototype = {
       node.push(" " + attrs[i]);
     }
     
-    if (this.isSelfClosing()) {
+    if (this.isSelfClosing() && this.children.length==0) {
       node.push("/>\n");
     } else {
       node.push(">");
