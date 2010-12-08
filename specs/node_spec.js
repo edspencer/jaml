@@ -8,81 +8,92 @@ describe("Jaml.Node", function() {
   
   describe("tag closing", function() {
     it("self-closes by default", function(){
-      assert.equal("<fooBar/>\n", new Jaml.Node("fooBar").render());
+      expect(new Jaml.Node("fooBar").render()).
+     toEqual("<fooBar/>\n");
     });
 
     it("doesn't self-close for (for example) textarea", function(){
-      assert.equal("<textarea></textarea>\n", new Jaml.Node("textarea").render());
+      expect(new Jaml.Node("textarea").render()).
+     toEqual("<textarea></textarea>\n");
     });
     
     it("doesn't self-close if there are children", function(){
-      assert.equal("<fooBar>\n" +
-                   "  <x/>\n" +
-                   "</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.Node("x")).render());
+      expect(new Jaml.Node("fooBar").addChild(new Jaml.Node("x")).render()).
+     toEqual("<fooBar>\n" +
+             "  <x/>\n" +
+             "</fooBar>\n");
     });
     
     it("doesn't self-close if there are text nodes", function(){
-      assert.equal("<fooBar>x</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.TextNode("x")).render());
+      expect(new Jaml.Node("fooBar").addChild(new Jaml.TextNode("x")).render()).
+     toEqual("<fooBar>x</fooBar>\n");
     });
     
   });
   
   describe("padding of spaces at the front", function() {
     it("properly prepends the specified amount of left padding", function(){
-      assert.equal("<fooBar/>\n", new Jaml.Node("fooBar").render());
-      assert.equal("<fooBar/>\n", new Jaml.Node("fooBar").render(0));
-      assert.equal("     <fooBar/>\n", new Jaml.Node("fooBar").render(5));
+      expect(new Jaml.Node("fooBar").render()).
+     toEqual("<fooBar/>\n");
+     
+      expect(new Jaml.Node("fooBar").render(0)).
+     toEqual("<fooBar/>\n");
+     
+      expect(new Jaml.Node("fooBar").render(5)).
+     toEqual("     <fooBar/>\n");
     });
 
     it("indents children by 2", function(){
-      assert.equal("<fooBar>\n" +
-                   "  <x>\n" + 
-                   "    <y/>\n" +
-                   "  </x>\n" +
-                   "</fooBar>\n", 
-                   new Jaml.Node("fooBar").
-                     addChild(
-                       new Jaml.Node("x").
-                         addChild(new Jaml.Node("y"))
-                     ).render());
+      expect(new Jaml.Node("fooBar").
+               addChild(
+                 new Jaml.Node("x").
+                   addChild(new Jaml.Node("y"))
+               ).render()).
+     toEqual("<fooBar>\n" +
+             "  <x>\n" + 
+             "    <y/>\n" +
+             "  </x>\n" +
+             "</fooBar>\n");
     });
   });
   
   describe("attributes", function() {
     it("renders attributes as key value pairs separated by = in the tag", function(){
-      assert.equal("<fooBar a=\"b\"/>\n", fooBar.setAttributes({a:"b"}).render());
+      expect(fooBar.setAttributes({a:"b"}).render()).
+     toEqual("<fooBar a=\"b\"/>\n");
     });
 
     it("renders several attributes in a row.  order is imposed", function(){
-      assert.equal("<fooBar a=\"b\" c=\"d\" x=\"y\"/>\n", fooBar.setAttributes({x:"y", a:"b", c:"d"}).render());
+      expect(fooBar.setAttributes({x:"y", a:"b", c:"d"}).render()).
+     toEqual("<fooBar a=\"b\" c=\"d\" x=\"y\"/>\n");
     });
 
     it("renders booleans", function(){
-      assert.equal("<fooBar a=\"true\"/>\n", fooBar.setAttributes({a:true}).render());
-      assert.equal("<fooBar a=\"false\"/>\n", fooBar.setAttributes({a:false}).render());
+      expect(fooBar.setAttributes({a:true}).render()).toEqual("<fooBar a=\"true\"/>\n");
+      expect(fooBar.setAttributes({a:false}).render()).toEqual("<fooBar a=\"false\"/>\n");
     });
 
     it("renders integers", function(){
-      assert.equal("<fooBar a=\"0\"/>\n", fooBar.setAttributes({a:0}).render());
-      assert.equal("<fooBar a=\"-1\"/>\n", fooBar.setAttributes({a:-1}).render());
-      assert.equal("<fooBar a=\"7\"/>\n", fooBar.setAttributes({a:7}).render());
+      expect(fooBar.setAttributes({a:0}).render()).toEqual("<fooBar a=\"0\"/>\n");
+      expect(fooBar.setAttributes({a:-1}).render()).toEqual("<fooBar a=\"-1\"/>\n");
+      expect(fooBar.setAttributes({a:7}).render()).toEqual("<fooBar a=\"7\"/>\n");
     });
     
     it("renders floats", function(){
-      assert.equal("<fooBar a=\"0\"/>\n", fooBar.setAttributes({a:0.0}).render());
-      
-      assert.equal("<fooBar a=\"0.01\"/>\n", fooBar.setAttributes({a:0.01}).render());
-      assert.equal("<fooBar a=\"0.01\"/>\n", fooBar.setAttributes({a:0.0100}).render());
-      
-      assert.equal("<fooBar a=\"23.45\"/>\n", fooBar.setAttributes({a:23.45}).render());
-      assert.equal("<fooBar a=\"-23.45\"/>\n", fooBar.setAttributes({a:-23.45}).render());
+      expect(fooBar.setAttributes({a:0.0}).render()).toEqual("<fooBar a=\"0\"/>\n");
+
+      expect(fooBar.setAttributes({a:0.01}).render()).toEqual("<fooBar a=\"0.01\"/>\n");
+      expect(fooBar.setAttributes({a:0.0100}).render()).toEqual("<fooBar a=\"0.01\"/>\n");
+
+      expect(fooBar.setAttributes({a:23.45}).render()).toEqual("<fooBar a=\"23.45\"/>\n");
+      expect(fooBar.setAttributes({a:-23.45}).render()).toEqual("<fooBar a=\"-23.45\"/>\n");
     });
     
     it("does the javascript thing on really big and really small numbers.  just calling this out.", function(){
-      assert.equal("<fooBar a=\"7e+22\"/>\n", fooBar.setAttributes({a:70000000000000000000000}).render());
-      assert.equal("<fooBar a=\"7e+22\"/>\n", fooBar.setAttributes({a:70000000000000000000000.01}).render());
+      expect(fooBar.setAttributes({a:70000000000000000000000}).render()).toEqual("<fooBar a=\"7e+22\"/>\n");
+      expect(fooBar.setAttributes({a:70000000000000000000000.01}).render()).toEqual("<fooBar a=\"7e+22\"/>\n");
       
-      assert.equal("<fooBar a=\"7e-23\"/>\n", fooBar.setAttributes({a:0.00000000000000000000007}).render());
+      expect(fooBar.setAttributes({a:0.00000000000000000000007}).render()).toEqual("<fooBar a=\"7e-23\"/>\n");
     });
     
     //todo: throw if the attribute value is a non-primitive?
@@ -90,48 +101,54 @@ describe("Jaml.Node", function() {
   
   describe("element children", function() {
     it("renders children as inner tags", function(){
-      assert.equal("<fooBar>\n" +
-                   "  <x/>\n" +
-                   "</fooBar>\n", fooBar.addChild(new Jaml.Node("x")).render());
+      expect(fooBar.addChild(new Jaml.Node("x")).render()).
+     toEqual("<fooBar>\n" +
+             "  <x/>\n" +
+             "</fooBar>\n");
     });
 
     it("renders multiple children in order", function(){
-      assert.equal("<fooBar>\n" +
-                   "  <x/>\n" +
-                   "  <y/>\n" +
-                   "  <z/>\n" +
-                   "</fooBar>\n", 
-                   fooBar.addChild(new Jaml.Node("x")).
-                          addChild(new Jaml.Node("y")).
-                          addChild(new Jaml.Node("z")).render());
+      expect(fooBar.addChild(new Jaml.Node("x")).
+                    addChild(new Jaml.Node("y")).
+                    addChild(new Jaml.Node("z")).render()).
+     toEqual("<fooBar>\n" +
+             "  <x/>\n" +
+             "  <y/>\n" +
+             "  <z/>\n" +
+             "</fooBar>\n");
     });
 
     it("renders children of children", function(){
-      assert.equal("<fooBar>\n" +
-                   "  <x>\n" +
-                   "    <J/>\n" +
-                   "  </x>\n" +
-                   "  <y>\n" +
-                   "    <K/>\n" +
-                   "  </y>\n" +
-                   "</fooBar>\n", 
-                   fooBar.addChild(new Jaml.Node("x").addChild(new Jaml.Node("J"))).
-                          addChild(new Jaml.Node("y").addChild(new Jaml.Node("K"))).render());
+      expect(fooBar.addChild(new Jaml.Node("x").
+                      addChild(new Jaml.Node("J"))).
+                    addChild(new Jaml.Node("y").
+                      addChild(new Jaml.Node("K"))).render()).
+     toEqual("<fooBar>\n" +
+             "  <x>\n" +
+             "    <J/>\n" +
+             "  </x>\n" +
+             "  <y>\n" +
+             "    <K/>\n" +
+             "  </y>\n" +
+             "</fooBar>\n");
     });
   });
   
   describe("textnodes", function() {
     it("renders", function(){
-      assert.equal("x", new Jaml.TextNode("x").render());
+      expect(new Jaml.TextNode("x").render()).
+     toEqual("x");
     });
 
     it("renders a single textnode child all on one line", function(){
-      assert.equal("<fooBar>x</fooBar>\n", new Jaml.Node("fooBar").addChild(new Jaml.TextNode("x")).render());
+      expect(new Jaml.Node("fooBar").addChild(new Jaml.TextNode("x")).render()).
+     toEqual("<fooBar>x</fooBar>\n");
     });
 
     it("renders text nodes in one line, on a new line if there are multiple textnode children", function(){
-      assert.equal("<fooBar>\nxy</fooBar>\n", fooBar.addChild(new Jaml.TextNode("x")).
-                                                     addChild(new Jaml.TextNode("y")).render());
+      expect(fooBar.addChild(new Jaml.TextNode("x")).
+                    addChild(new Jaml.TextNode("y")).render()).
+     toEqual("<fooBar>\nxy</fooBar>\n");
     });
   });
 });

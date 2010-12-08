@@ -3,7 +3,7 @@ require("./spec_helper.js");
 describe("Jaml (top-level)", function() {
 
   beforeEach(function(){
-    Jaml.templates = {}
+    Jaml.templates = {};
   })
   
   describe("you can register a template and then use it to render", function() {
@@ -15,11 +15,11 @@ describe("Jaml (top-level)", function() {
         )
       });
     
-      assert.equal("<ul>\n" +
-                   "  <li>red</li>\n" +
-                   "  <li>green</li>\n" + 
-                   "</ul>\n", 
-                   Jaml.render("color"));
+      expect(Jaml.render("color")).
+     toEqual("<ul>\n" +
+             "  <li>red</li>\n" +
+             "  <li>green</li>\n" + 
+             "</ul>\n");
     });
 
     it("works with data passed in", function(){
@@ -30,11 +30,11 @@ describe("Jaml (top-level)", function() {
         )
       });
     
-      assert.equal("<ul>\n" +
-                   "  <li>red</li>\n" +
-                   "  <li>green</li>\n" + 
-                   "</ul>\n", 
-                   Jaml.render("color", {primaryColor:"red", secondaryColor:"green"} ));
+      expect(Jaml.render("color", {primaryColor:"red", secondaryColor:"green"} )).
+     toEqual("<ul>\n" +
+             "  <li>red</li>\n" +
+             "  <li>green</li>\n" + 
+             "</ul>\n");
     });
 
     it("can have multiple templates", function(){
@@ -49,30 +49,32 @@ describe("Jaml (top-level)", function() {
         p(widget.shape)
       });
       
-      var christmasTree = {primaryColor:"red", secondaryColor:"green", shape:"round"}
-
-      assert.equal("<ul>\n" +
-                   "  <li>red</li>\n" +
-                   "  <li>green</li>\n" + 
-                   "</ul>\n", 
-                   Jaml.render("color", christmasTree ));
-                   
-      assert.equal("<p>round</p>\n",
-                   Jaml.render("shape", christmasTree ));
+      var christmasTree = {primaryColor:"red", secondaryColor:"green", shape:"round"};
+      
+      expect(Jaml.render("color", christmasTree )).
+     toEqual("<ul>\n" +
+             "  <li>red</li>\n" +
+             "  <li>green</li>\n" + 
+             "</ul>\n");
+      
+      expect(Jaml.render("shape", christmasTree )).
+     toEqual("<p>round</p>\n");        
     });
     
     it("can override a template by using the same name", function(){
-      var christmasTree = {shape:"round"}
+      var christmasTree = {shape:"round"};
       
       Jaml.register("shape", function(widget){
         p(widget.shape)
       });
-      assert.equal("<p>round</p>\n", Jaml.render("shape", christmasTree ));
+      expect(Jaml.render("shape", christmasTree )).
+     toEqual("<p>round</p>\n");
                    
       Jaml.register("shape", function(widget){
         div(widget.shape)
       });
-      assert.equal("<div>round</div>\n", Jaml.render("shape", christmasTree ));
+      expect(Jaml.render("shape", christmasTree )).
+     toEqual("<div>round</div>\n");
 
     });
     

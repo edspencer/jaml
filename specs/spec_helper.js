@@ -7,8 +7,6 @@ for(var key in jasmine) {
   global[key] = jasmine[key]
 }
 
-assert = require('assert')
-
 require("Jaml")
 require("Node")
 require("Template")
