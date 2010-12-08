@@ -165,7 +165,7 @@ h4. Run the tests in a browser
 
 p. Jasmine must be checked out in a directory alongside jaml:
 
-bc.. git clone https://github.com/pivotal/jasmine
+bc.. git clone https://github.com/pivotal/jasmine.git
 ls
 => jaml jasmine
 
