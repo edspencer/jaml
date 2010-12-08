@@ -2,10 +2,6 @@ require("./spec_helper.js");
 
 describe("Jaml.Template", function() {
   
-  beforeEach(function(){
-    // fooBar = new Jaml.Node("fooBar");
-  });
-
   describe("all html tags", function() {
     it("a giant integration test for all html tags, so we see what we're allowing." +
        "  intentionally locating this at the top of this spec file.", function(){      
