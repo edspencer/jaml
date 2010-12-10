@@ -24,8 +24,21 @@ Jaml = function() {
      * @param {Object} data Optional data object
      */
     render: function(name, data) {
-      var template = this.templates[name],
-          renderer = new Jaml.Template(template);
+      var template = this.templates[name];
+      
+      if (template==undefined) {
+        var registeredTemplates = [];
+        for (key in this.templates) {
+          registeredTemplates.push("'" + key + "'");
+        };
+        registeredTemplates.sort();
+        
+        
+        throw new Error("Jaml doesn't know about a template named '" + name + "'." +
+                        "  Currently registered templates: " + registeredTemplates.join(", ") + ".");
+      }
+      
+      var renderer = new Jaml.Template(template);
           
       return renderer.render(data);
     }    

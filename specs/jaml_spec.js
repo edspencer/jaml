@@ -78,6 +78,24 @@ describe("Jaml (top-level)", function() {
 
     });
     
+    it("throws a good error message if a template is not found", function(){
+      Jaml.register("color", function(){
+        ul(
+          li("red"),
+          li("green")
+        )
+      });
+
+      Jaml.register("shape", function(){
+        p("round")
+      });
+    
+      expect(function(){ expect(Jaml.render("ZZZZ")); }).
+     toThrow(new Error("Jaml doesn't know about a template named 'ZZZZ'.  Currently registered templates: 'color', 'shape'.")); 
+    });
+
+  
+    
   });    
 });
 
