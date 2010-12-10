@@ -24,7 +24,8 @@ describe("Jaml.Template", function() {
                      fieldset(
                        label(),
                        input(),
-                       textarea()
+                       textarea(),
+                       button()
                      )
                    )
                  )
@@ -49,6 +50,7 @@ describe("Jaml.Template", function() {
              "        <label/>\n" +
              "        <input/>\n" +
              "        <textarea></textarea>\n" + //I'm not self-closing
+             "        <button/>\n" +
              "      </fieldset>\n" +
              "    </form>\n" +
              "  </body>\n" +
