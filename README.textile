@@ -177,7 +177,7 @@ p. 1) Install node.js.
 
 p. 2) Check out sconover's jasmine-node alongside jaml:
 
-bc.. git clone https://github.com/sconover/jasmine-node
+bc.. git clone https://github.com/sconover/jasmine-node.git
 ls
 => jaml jasmine-node
 
