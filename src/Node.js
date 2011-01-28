@@ -141,13 +141,11 @@ Jaml.Node.prototype = {
    * @return {Boolean} True if this tag should close itself
    */
   isSelfClosing: function() {
-    var selfClosing = true;
-    
-    for (var i = this.notSelfClosingTags.length - 1; i >= 0; i--){
-      if (this.tagName == this.notSelfClosingTags[i]) selfClosing = false;
+    for (var i = this.notSelfClosingTags.length - 1; i >= 0; i--) {
+      if (this.tagName == this.notSelfClosingTags[i]) return false;
     }
-    
-    return selfClosing;
+
+    return true;
   },
   
   /**
