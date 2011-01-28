@@ -1,3 +1,6 @@
 require("./spec_helper")
 
-jasmine.requireAllSpecFiles(__dirname)
+if (jasmine.executeSpecsInFolder)
+  jasmine.executeSpecsInFolder(__dirname)
+else
+  jasmine.requireAllSpecFiles(__dirname)
