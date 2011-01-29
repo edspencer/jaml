@@ -15,7 +15,9 @@ describe("Jaml.Template", function() {
                    br(), hr(),
                    table(
                      thead(tr(th())),
+                     tfoot(tr(td())),
                      tbody(tr(td()))
+                     
                    ),
                    ul(li(), ol()),
                    dl(), dt(), dd(),
@@ -39,6 +41,7 @@ describe("Jaml.Template", function() {
              "    <br/>\n    <hr/>\n" +
              "    <table>\n" +
              "      <thead>\n        <tr>\n          <th/>\n        </tr>\n      </thead>\n" +
+             "      <tfoot>\n        <tr>\n          <td/>\n        </tr>\n      </tfoot>\n" +
              "      <tbody>\n        <tr>\n          <td/>\n        </tr>\n      </tbody>\n" +
              "    </table>\n" +
              "    <ul>\n      <li/>\n      <ol/>\n    </ul>\n" +
