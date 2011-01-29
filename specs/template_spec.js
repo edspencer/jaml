@@ -15,7 +15,9 @@ describe("Jaml.Template", function() {
                    br(), hr(),
                    table(
                      thead(tr(th())),
+                     tfoot(tr(td())),
                      tbody(tr(td()))
+                     
                    ),
                    ul(li(), ol()),
                    dl(), dt(), dd(),
@@ -39,6 +41,7 @@ describe("Jaml.Template", function() {
              "    <br/>\n    <hr/>\n" +
              "    <table>\n" +
              "      <thead>\n        <tr>\n          <th/>\n        </tr>\n      </thead>\n" +
+             "      <tfoot>\n        <tr>\n          <td/>\n        </tr>\n      </tfoot>\n" +
              "      <tbody>\n        <tr>\n          <td/>\n        </tr>\n      </tbody>\n" +
              "    </table>\n" +
              "    <ul>\n      <li/>\n      <ol/>\n    </ul>\n" +
@@ -88,8 +91,8 @@ describe("Jaml.Template", function() {
   
   describe("array data", function() {
     it("renders the template for each item in the array", function(){
-      expect(new Jaml.Template(function(widget){
-               ul(
+      expect(new Jaml.Template(function(widget, i){
+               ul({id: i},
                  li(widget.primaryColor),
                  li(widget.secondaryColor)
                )
@@ -98,15 +101,15 @@ describe("Jaml.Template", function() {
                {primaryColor: "orange", secondaryColor: "blue"},
                {primaryColor: "yellow", secondaryColor: "purple"}
              ])).
-     toEqual("<ul>\n" +
+     toEqual("<ul id=\"0\">\n" +
              "  <li>red</li>\n" +
              "  <li>green</li>\n" + 
              "</ul>\n" +
-             "<ul>\n" +
+             "<ul id=\"1\">\n" +
              "  <li>orange</li>\n" +
              "  <li>blue</li>\n" + 
              "</ul>\n" +
-             "<ul>\n" +
+             "<ul id=\"2\">\n" +
              "  <li>yellow</li>\n" +
              "  <li>purple</li>\n" + 
              "</ul>\n");
