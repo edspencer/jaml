@@ -26,7 +26,8 @@ describe("Jaml.Template", function() {
                      fieldset(
                        label(),
                        input(),
-                       textarea()
+                       textarea(),
+                       select({name: "test"}, option({value: "test"}, "test"))
                      )
                    )
                  )
@@ -52,6 +53,9 @@ describe("Jaml.Template", function() {
              "        <label/>\n" +
              "        <input/>\n" +
              "        <textarea></textarea>\n" + //I'm not self-closing
+             "        <select name=\"test\">\n" +
+             "          <option value=\"test\">test</option>\n" +
+             "        </select>\n" +
              "      </fieldset>\n" +
              "    </form>\n" +
              "  </body>\n" +

@@ -153,7 +153,7 @@ Jaml.Node.prototype = {
    * @type Array
    * An array of all tags that should be self closing
    */
-  notSelfClosingTags: ['textarea', 'script', 'em', 'strong']
+  notSelfClosingTags: ['textarea', 'script', 'em', 'strong', 'option', 'select']
 };
 
 Jaml.TextNode = function(text) {
