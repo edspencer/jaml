@@ -117,7 +117,31 @@ describe("Jaml.Template", function() {
              "  <li>yellow</li>\n" +
              "  <li>purple</li>\n" + 
              "</ul>\n");
-    });    
+    });
+    it("renders the template for each item in the array, using thisObj", function(){
+        expect(new Jaml.Template(function(widget, i){
+                 ul({id: i, data: this.data},
+                   li(widget.primaryColor),
+                   li(widget.secondaryColor)
+                 )
+               }).render({data: "test"}, [
+                 {primaryColor: "red", secondaryColor: "green"},
+                 {primaryColor: "orange", secondaryColor: "blue"},
+                 {primaryColor: "yellow", secondaryColor: "purple"}
+               ])).
+       toEqual("<ul data=\"test\" id=\"0\">\n" +
+               "  <li>red</li>\n" +
+               "  <li>green</li>\n" + 
+               "</ul>\n" +
+               "<ul data=\"test\" id=\"1\">\n" +
+               "  <li>orange</li>\n" +
+               "  <li>blue</li>\n" + 
+               "</ul>\n" +
+               "<ul data=\"test\" id=\"2\">\n" +
+               "  <li>yellow</li>\n" +
+               "  <li>purple</li>\n" + 
+               "</ul>\n");
+      });
   });
   
   

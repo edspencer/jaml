@@ -24,11 +24,12 @@ Jaml.Template = function(tpl) {
 Jaml.Template.prototype = {
   /**
    * Renders this template given the supplied data
+   * @param {Object} thisObj Optional data object
    * @param {Object} data Optional data object
    * @return {String} The rendered HTML string
    */
-  render: function(data) {
-    data = data || {};
+  render: function(thisObj, data) {
+    data = data || (thisObj = thisObj || {});
     
     //the 'data' argument can come in two flavours - array or non-array. Normalise it
     //here so that it always looks like an array.
@@ -38,7 +39,7 @@ Jaml.Template.prototype = {
     
     with(this) {
       for (var i=0; i < data.length; i++) {
-        eval("(" + this.tpl.toString() + ")(data[i], i)");
+        eval("(" + this.tpl.toString() + ").call(thisObj, data[i], i)");
       };
     }
     

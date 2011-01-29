@@ -21,13 +21,13 @@ Jaml = function() {
     /**
      * Renders the given template name with an optional data object
      * @param {String} name The name of the template to render
+     * @param {Object} thisObj Optional data object
      * @param {Object} data Optional data object
      */
-    render: function(name, data) {
+    render: function(name, thisObj, data) {
       var template = this.templates[name],
           renderer = new Jaml.Template(template);
-          
-      return renderer.render(data);
-    }    
+      return renderer.render.apply(renderer, Array.prototype.slice.call(arguments, 1));
+    }
   };
 }();
