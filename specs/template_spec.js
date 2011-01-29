@@ -11,7 +11,7 @@ describe("Jaml.Template", function() {
                    meta(), script(), title(), link()
                  ),
                  body(
-                   div(), p(), span(), a(), img(),
+                   div(), p(), em(), strong(), span(), a(), img(),
                    br(), hr(),
                    table(
                      thead(tr(th())),
@@ -37,7 +37,7 @@ describe("Jaml.Template", function() {
              "    <meta/>\n    <script></script>\n    <title/>\n    <link/>\n" +
              "  </head>\n" +
              "  <body>\n" +
-             "    <div/>\n    <p/>\n    <span/>\n    <a/>\n    <img/>\n" +
+             "    <div/>\n    <p/>\n    <em></em>\n    <strong></strong>\n    <span/>\n    <a/>\n    <img/>\n" +
              "    <br/>\n    <hr/>\n" +
              "    <table>\n" +
              "      <thead>\n        <tr>\n          <th/>\n        </tr>\n      </thead>\n" +
