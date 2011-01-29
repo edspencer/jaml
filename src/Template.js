@@ -123,8 +123,7 @@ Jaml.Template.prototype = {
     };
   };
 
-  for (var i = tags.length - 1; i >= 0; i--){
-    var tagName = tags[i];
-    Jaml.Template.prototype[tagName] = makeTagHelper(tagName);
+  for (var i = 0, tag; tag = tags[i]; i++) {
+    Jaml.Template.prototype[tag] = makeTagHelper(tag);
   };
 })();
