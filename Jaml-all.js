@@ -7,10 +7,8 @@
  */
 Jaml = function() {
   return {
-    automaticScope: true,
     templates: {},
-    helpers  : {},
-    
+        
     /**
      * Registers a template by name
      * @param {String} name The name of the template
@@ -23,26 +21,17 @@ Jaml = function() {
     /**
      * Renders the given template name with an optional data object
      * @param {String} name The name of the template to render
+     * @param {Object} thisObj Optional data object
      * @param {Object} data Optional data object
      */
-    render: function(name, data) {
+    render: function(name, thisObj, data) {
       var template = this.templates[name],
           renderer = new Jaml.Template(template);
-          
-      return renderer.render(data);
-    },
-    
-    /**
-     * Registers a helper function
-     * @param {String} name The name of the helper
-     * @param {Function} helperFn The helper function
-     */
-    registerHelper: function(name, helperFn) {
-      this.helpers[name] = helperFn;
-      Jaml.Template.prototype[name] = helperFn;
+      return renderer.render.apply(renderer, Array.prototype.slice.call(arguments, 1));
     }
   };
 }();
+
 /**
  * @constructor
  * @param {String} tagName The tag name this node represents (e.g. 'p', 'div', etc)
@@ -82,6 +71,7 @@ Jaml.Node.prototype = {
       
       this.attributes[mappedKey] = attrs[key];
     }
+    return this;
   },
   
   /**
@@ -90,6 +80,7 @@ Jaml.Node.prototype = {
    */
   addChild: function(childText) {
     this.children.push(childText);
+    return this;
   },
   
   /**
@@ -101,36 +92,60 @@ Jaml.Node.prototype = {
     lpad = lpad || 0;
     
     var node      = [],
+        attrs     = [],
         textnode  = (this instanceof Jaml.TextNode),
         multiline = this.multiLineTag();
+    
     
     //add any left padding
     if (!textnode) node.push(this.getPadding(lpad));
     
     //open the tag
     node.push("<" + this.tagName);
-    
-    //add any tag attributes
+
     for (var key in this.attributes) {
-      node.push(" " + key + "=\"" + this.attributes[key] + "\"");
+      attrs.push(key + "=\"" + this.attributes[key] + "\"");
+    }    
+    attrs.sort()
+    //add any tag attributes
+    for (var i=0; i<attrs.length; i++) {
+      node.push(" " + attrs[i]);
     }
     
-    if (this.isSelfClosing()) {
-      node.push(" />\n");
+    if (this.isSelfClosing() && this.children.length==0) {
+      node.push("/>\n");
     } else {
       node.push(">");
       
       if (multiline) node.push("\n");
       
-      for (var i=0; i < this.children.length; i++) {
-        node.push(this.children[i].render(lpad + 2));
-      }
-      
+      this.renderChildren(node, this.children, lpad);
+            
       if (multiline) node.push(this.getPadding(lpad));
       node.push("</", this.tagName, ">\n");
     }
     
     return node.join("");
+  },
+
+  /**
+   * Renders an array of children
+   * @node {Array} the current array of rendered lines
+   * @children {Array} the child nodes to be rendered
+   * @param {Number} lpad Amount of whitespace to add to the left of the string
+   */
+  renderChildren: function(node, children, lpad) {
+    var childLpad = lpad + 2;
+    
+    for (var i=0; i < children.length; i++) {
+      var child = children[i];
+      if (child instanceof Array) {
+        var nestedChildren = child;
+        this.renderChildren(node, nestedChildren, lpad)
+      } else {
+        node.push(child.render(childLpad));
+      }
+    }    
   },
   
   /**
@@ -160,13 +175,11 @@ Jaml.Node.prototype = {
    * @return {Boolean} True if this tag should close itself
    */
   isSelfClosing: function() {
-    var selfClosing = false;
-    
-    for (var i = this.selfClosingTags.length - 1; i >= 0; i--){
-      if (this.tagName == this.selfClosingTags[i]) selfClosing = true;
+    for (var i = this.notSelfClosingTags.length - 1; i >= 0; i--) {
+      if (this.tagName == this.notSelfClosingTags[i]) return false;
     }
-    
-    return selfClosing;
+
+    return true;
   },
   
   /**
@@ -174,8 +187,7 @@ Jaml.Node.prototype = {
    * @type Array
    * An array of all tags that should be self closing
    */
-  selfClosingTags: ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
-                    'img', 'input', 'isindex', 'link', 'meta', 'param']
+  notSelfClosingTags: ['textarea', 'script', 'em', 'strong', 'option', 'select']
 };
 
 Jaml.TextNode = function(text) {
@@ -187,6 +199,7 @@ Jaml.TextNode.prototype = {
     return this.text;
   }
 };
+
 /**
  * Represents a single registered template. Templates consist of an arbitrary number
  * of trees (e.g. there may be more than a single root node), and are not compiled.
@@ -213,11 +226,12 @@ Jaml.Template = function(tpl) {
 Jaml.Template.prototype = {
   /**
    * Renders this template given the supplied data
+   * @param {Object} thisObj Optional data object
    * @param {Object} data Optional data object
    * @return {String} The rendered HTML string
    */
-  render: function(data) {
-    data = data || {};
+  render: function(thisObj, data) {
+    data = data || (thisObj = thisObj || {});
     
     //the 'data' argument can come in two flavours - array or non-array. Normalise it
     //here so that it always looks like an array.
@@ -225,20 +239,10 @@ Jaml.Template.prototype = {
       data = [data];
     }
     
-    if (Jaml.automaticScope) {
-      // Use function decompilation to put all helpers in the
-      // function's scope.
-      with(this) {
-        for (var i = 0; i < data.length; i++) {
-          eval("(" + this.tpl.toString() + ")(data[i], i)");
-        };
-      }      
-    } else {
-      // Avoid the `eval` call at the cost of slightly more verbose
-      // templates.
-      for (var i = 0; i < data.length; i++) {
-        this.tpl.call(this, data[i], i);
-      }
+    with(this) {
+      for (var i=0; i < data.length; i++) {
+        eval("(" + this.tpl.toString() + ").call(thisObj, data[i], i)");
+      };
     }
     
     var roots  = this.getRoots(),
@@ -270,13 +274,13 @@ Jaml.Template.prototype = {
   },
   
   tags: [
-    "html", "head", "body", "script", "meta", "title", "link", "script",
-    "div", "p", "span", "a", "img", "br", "hr",
+    "html", "head", "body", "script", "meta", "title", "link",
+    "div", "p", "span", "a", "img", "br", "hr", "em", "strong",
     "table", "tr", "th", "td", "thead", "tbody", "tfoot",
     "ul", "ol", "li", 
     "dl", "dt", "dd",
     "h1", "h2", "h3", "h4", "h5", "h6", "h7",
-    "form", "fieldset", "input", "label"
+    "form", "fieldset", "input", "textarea", "label", "select", "option"
   ]
 };
 
@@ -288,12 +292,12 @@ Jaml.Template.prototype = {
 
   /**
    * This function is created for each tag name and assigned to Template's
-   * prototype below.
-   */  
-  function makeTagHelper(tagName) {
+   * prototype below
+   */
+  var makeTagHelper = function(tagName) {
     return function(attrs) {
       var node = new Jaml.Node(tagName);
-      
+
       var firstArgIsAttributes =  (typeof attrs == 'object')
                                && !(attrs instanceof Jaml.Node)
                                && !(attrs instanceof Jaml.TextNode);
@@ -308,22 +312,22 @@ Jaml.Template.prototype = {
         if (typeof arg == "string" || arg == undefined) {
           arg = new Jaml.TextNode(arg || "");
         }
-        
+
         if (arg instanceof Jaml.Node || arg instanceof Jaml.TextNode) {
           arg.parent = node;
         }
 
         node.addChild(arg);
       };
-      
+
       this.nodes.push(node);
-      
+
       return node;
     };
-  }
-  
-  for (var i = tags.length - 1; i >= 0; i--){
-    var tagName = tags[i];    
-    Jaml.Template.prototype[tagName] = makeTagHelper(tagName);
+  };
+
+  for (var i = 0, tag; tag = tags[i]; i++) {
+    Jaml.Template.prototype[tag] = makeTagHelper(tag);
   };
 })();
+
