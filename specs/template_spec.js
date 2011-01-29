@@ -91,8 +91,8 @@ describe("Jaml.Template", function() {
   
   describe("array data", function() {
     it("renders the template for each item in the array", function(){
-      expect(new Jaml.Template(function(widget){
-               ul(
+      expect(new Jaml.Template(function(widget, i){
+               ul({id: i},
                  li(widget.primaryColor),
                  li(widget.secondaryColor)
                )
@@ -101,15 +101,15 @@ describe("Jaml.Template", function() {
                {primaryColor: "orange", secondaryColor: "blue"},
                {primaryColor: "yellow", secondaryColor: "purple"}
              ])).
-     toEqual("<ul>\n" +
+     toEqual("<ul id=\"0\">\n" +
              "  <li>red</li>\n" +
              "  <li>green</li>\n" + 
              "</ul>\n" +
-             "<ul>\n" +
+             "<ul id=\"1\">\n" +
              "  <li>orange</li>\n" +
              "  <li>blue</li>\n" + 
              "</ul>\n" +
-             "<ul>\n" +
+             "<ul id=\"2\">\n" +
              "  <li>yellow</li>\n" +
              "  <li>purple</li>\n" + 
              "</ul>\n");
