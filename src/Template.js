@@ -4,20 +4,21 @@
  * When a template is rendered its node structure is computed with any provided template
  * data, culminating in one or more root nodes.  The root node(s) are then joined together
  * and returned as a single output string.
- * 
+ *
  * The render process uses two dirty but necessary hacks.  First, the template function is
  * decompiled into a string (but is not modified), so that it can be eval'ed within the scope
  * of Jaml.Template.prototype. This allows the second hack, which is the use of the 'with' keyword.
  * This allows us to keep the pretty DSL-like syntax, though is not as efficient as it could be.
  */
-Jaml.Template = function(tpl) {
+Jaml.Template = function(tpl, tpls) {
   /**
    * @property tpl
    * @type Function
    * The function this template was created from
    */
   this.tpl = tpl;
-  
+  this.tpls = tpls;
+
   this.nodes = [];
 };
 
@@ -28,31 +29,37 @@ Jaml.Template.prototype = {
    * @param {Object} data Optional data object
    * @return {String} The rendered HTML string
    */
-  render: function(thisObj, data) {
+  _render: function(thisObj, data) {
     data = data || (thisObj = thisObj || {});
-    
+
     //the 'data' argument can come in two flavours - array or non-array. Normalise it
     //here so that it always looks like an array.
     if (data.constructor.toString().indexOf("Array") == -1) {
       data = [data];
     }
-    
+
     with(this) {
       for (var i=0; i < data.length; i++) {
         eval("(" + this.tpl.toString() + ").call(thisObj, data[i], i)");
       };
     }
-    
+
     var roots  = this.getRoots(),
         output = "";
-    
+
     for (var i=0; i < roots.length; i++) {
       output += roots[i].render();
     };
-    
+
     return output;
   },
-  
+
+  render: function(name, thisObj, data) {
+  	var template = typeof name === 'function' ? name : this.tpls[name],
+  			renderer = new Jaml.Template(template, this.tpls);
+  	return renderer._render.apply(renderer, Array.prototype.slice.call(arguments, 1));
+  },
+
   /**
    * Returns all top-level (root) nodes in this template tree.
    * Templates are tree structures, but there is no guarantee that there is a
@@ -61,21 +68,21 @@ Jaml.Template.prototype = {
    */
   getRoots: function() {
     var roots = [];
-    
+
     for (var i=0; i < this.nodes.length; i++) {
       var node = this.nodes[i];
-      
+
       if (node.parent == undefined) roots.push(node);
     };
-    
+
     return roots;
   },
-  
+
   tags: [
     "html", "head", "body", "script", "meta", "title", "link",
     "div", "p", "span", "a", "img", "br", "hr", "em", "strong",
     "table", "tr", "th", "td", "thead", "tbody", "tfoot",
-    "ul", "ol", "li", 
+    "ul", "ol", "li",
     "dl", "dt", "dd",
     "h1", "h2", "h3", "h4", "h5", "h6", "h7",
     "form", "fieldset", "input", "textarea", "label", "select", "option"

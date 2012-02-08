@@ -1,10 +1,10 @@
 require("./spec_helper.js");
 
 describe("Jaml.Template", function() {
-  
+
   describe("all html tags", function() {
     it("a giant integration test for all html tags, so we see what we're allowing." +
-       "  intentionally locating this at the top of this spec file.", function(){      
+       "  intentionally locating this at the top of this spec file.", function(){
       expect(new Jaml.Template(function(){
                html(
                  head(
@@ -17,7 +17,7 @@ describe("Jaml.Template", function() {
                      thead(tr(th())),
                      tfoot(tr(td())),
                      tbody(tr(td()))
-                     
+
                    ),
                    ul(li(), ol()),
                    dl(), dt(), dd(),
@@ -32,7 +32,7 @@ describe("Jaml.Template", function() {
                    )
                  )
                )
-             }).render()).
+             })._render()).
      toEqual("<html>\n" +
              "  <head>\n" +
              "    <meta/>\n    <script></script>\n    <title/>\n    <link/>\n" +
@@ -62,7 +62,7 @@ describe("Jaml.Template", function() {
              "</html>\n");
     });
   });
-  
+
   describe("basic", function() {
     it("renders", function(){
       expect(new Jaml.Template(function(){
@@ -70,29 +70,29 @@ describe("Jaml.Template", function() {
                  li("red"),
                  li("green")
                )
-             }).render()).
+             })._render()).
      toEqual("<ul>\n" +
              "  <li>red</li>\n" +
-             "  <li>green</li>\n" + 
+             "  <li>green</li>\n" +
              "</ul>\n");
     });
-    
+
     it("renders with data", function(){
       var theWidget = {primaryColor: "red", secondaryColor: "green"}
-      
+
       expect(new Jaml.Template(function(widget){
                ul(
                  li(widget.primaryColor),
                  li(widget.secondaryColor)
                )
-             }).render(theWidget)).
+             })._render(theWidget)).
      toEqual("<ul>\n" +
              "  <li>red</li>\n" +
-             "  <li>green</li>\n" + 
+             "  <li>green</li>\n" +
              "</ul>\n");
-    });    
+    });
   });
-  
+
   describe("array data", function() {
     it("renders the template for each item in the array", function(){
       expect(new Jaml.Template(function(widget, i){
@@ -100,22 +100,22 @@ describe("Jaml.Template", function() {
                  li(widget.primaryColor),
                  li(widget.secondaryColor)
                )
-             }).render([
+             })._render([
                {primaryColor: "red", secondaryColor: "green"},
                {primaryColor: "orange", secondaryColor: "blue"},
                {primaryColor: "yellow", secondaryColor: "purple"}
              ])).
      toEqual("<ul id=\"0\">\n" +
              "  <li>red</li>\n" +
-             "  <li>green</li>\n" + 
+             "  <li>green</li>\n" +
              "</ul>\n" +
              "<ul id=\"1\">\n" +
              "  <li>orange</li>\n" +
-             "  <li>blue</li>\n" + 
+             "  <li>blue</li>\n" +
              "</ul>\n" +
              "<ul id=\"2\">\n" +
              "  <li>yellow</li>\n" +
-             "  <li>purple</li>\n" + 
+             "  <li>purple</li>\n" +
              "</ul>\n");
     });
     it("renders the template for each item in the array, using thisObj", function(){
@@ -124,26 +124,26 @@ describe("Jaml.Template", function() {
                    li(widget.primaryColor),
                    li(widget.secondaryColor)
                  )
-               }).render({data: "test"}, [
+               })._render({data: "test"}, [
                  {primaryColor: "red", secondaryColor: "green"},
                  {primaryColor: "orange", secondaryColor: "blue"},
                  {primaryColor: "yellow", secondaryColor: "purple"}
                ])).
        toEqual("<ul data=\"test\" id=\"0\">\n" +
                "  <li>red</li>\n" +
-               "  <li>green</li>\n" + 
+               "  <li>green</li>\n" +
                "</ul>\n" +
                "<ul data=\"test\" id=\"1\">\n" +
                "  <li>orange</li>\n" +
-               "  <li>blue</li>\n" + 
+               "  <li>blue</li>\n" +
                "</ul>\n" +
                "<ul data=\"test\" id=\"2\">\n" +
                "  <li>yellow</li>\n" +
-               "  <li>purple</li>\n" + 
+               "  <li>purple</li>\n" +
                "</ul>\n");
       });
   });
-  
-  
+
+
 });
 
