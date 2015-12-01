@@ -5,7 +5,7 @@ describe("Jaml (top-level)", function() {
   beforeEach(function(){
     Jaml.templates = {};
   })
-  
+
   describe("you can register a template and then use it to render", function() {
     it("works with no data passed in (very simple)", function(){
       Jaml.register("color", function(){
@@ -14,11 +14,11 @@ describe("Jaml (top-level)", function() {
           li("green")
         )
       });
-    
+
       expect(Jaml.render("color")).
      toEqual("<ul>\n" +
              "  <li>red</li>\n" +
-             "  <li>green</li>\n" + 
+             "  <li>green</li>\n" +
              "</ul>\n");
     });
 
@@ -29,11 +29,11 @@ describe("Jaml (top-level)", function() {
           li(widget.secondaryColor)
         )
       });
-    
+
       expect(Jaml.render("color", {primaryColor:"red", secondaryColor:"green"} )).
      toEqual("<ul>\n" +
              "  <li>red</li>\n" +
-             "  <li>green</li>\n" + 
+             "  <li>green</li>\n" +
              "</ul>\n");
     });
 
@@ -44,32 +44,32 @@ describe("Jaml (top-level)", function() {
           li(widget.secondaryColor)
         )
       });
-    
+
       Jaml.register("shape", function(widget){
         p(widget.shape)
       });
-      
+
       var christmasTree = {primaryColor:"red", secondaryColor:"green", shape:"round"};
-      
+
       expect(Jaml.render("color", christmasTree )).
      toEqual("<ul>\n" +
              "  <li>red</li>\n" +
-             "  <li>green</li>\n" + 
+             "  <li>green</li>\n" +
              "</ul>\n");
-      
+
       expect(Jaml.render("shape", christmasTree )).
-     toEqual("<p>round</p>\n");        
+     toEqual("<p>round</p>\n");
     });
-    
+
     it("can override a template by using the same name", function(){
       var christmasTree = {shape:"round"};
-      
+
       Jaml.register("shape", function(widget){
         p(widget.shape)
       });
       expect(Jaml.render("shape", christmasTree )).
      toEqual("<p>round</p>\n");
-                   
+
       Jaml.register("shape", function(widget){
         div(widget.shape)
       });
@@ -77,7 +77,29 @@ describe("Jaml (top-level)", function() {
      toEqual("<div>round</div>\n");
 
     });
-    
-  });    
+
+
+
+    it("can use a template without registering it", function() {
+    	var christmasTree = {shape:"round"};
+    	expect(Jaml.render(function(widget){
+        p(widget.shape)
+      }, christmasTree )).
+     toEqual("<p>round</p>\n");
+    });
+
+    it("can override templates without registering them", function() {
+    	var christmasTree = {shape:"round"};
+    	expect(Jaml.render({
+    		shape: function(widget){
+      	  p(widget.shape)
+      	},
+    		div: function(widget){
+      	  div(render('shape', widget))
+      	}
+      }, "div", christmasTree )).
+     toEqual("<div><p>round</p>\n</div>\n");
+    });
+  });
 });
 
